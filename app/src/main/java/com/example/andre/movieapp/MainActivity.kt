@@ -14,8 +14,10 @@ import java.net.URL
 import java.io.*
 import java.nio.charset.StandardCharsets
 import org.json.JSONException
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.support.v4.content.ContextCompat.getSystemService
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.inputmethod.InputMethodManager
 
 
@@ -23,22 +25,29 @@ private val TAG = "MyActivity"
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var listViews: ListView
+    lateinit var listViews: RecyclerView
     lateinit var editText: EditText
-    lateinit var adapter : ArrayAdapter<String>
+    //lateinit var adapter : ArrayAdapter<String>
+    lateinit var adapter : MyAdapter
     lateinit var spiner : ProgressBar
     var vetor_ = ArrayList<String>()
+    var BMvetor_ = ArrayList<Bitmap>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        listViews = findViewById<ListView>(R.id.recyclerviewid)
+        listViews = findViewById<RecyclerView>(R.id.recyclerviewid)
         editText = findViewById<EditText>(R.id.editText)
-        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vetor_)
+
+
+        adapter = MyAdapter(this,vetor_,BMvetor_)
+        //adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vetor_)
         spiner = findViewById<ProgressBar>(R.id.progressBar)
         spiner.visibility= View.INVISIBLE
 
+
         listViews.adapter = adapter
+        listViews.layoutManager = LinearLayoutManager(this)
 
         editText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
@@ -58,6 +67,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class downloadContent:AsyncTask<String,Boolean,Boolean >(){
+
+        fun getBitmapFromURL(src: String): Bitmap {
+            try {
+                val url = java.net.URL(src)
+                val connection = url
+                        .openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                val input = connection.inputStream
+                return BitmapFactory.decodeStream(input)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return BitmapFactory.decodeResource(resources,R.mipmap.apollo)
+            }
+
+        }
+
         override fun doInBackground(vararg params: String?): Boolean {
 
             Log.i(TAG,"Entrou em doInback")
@@ -72,8 +98,11 @@ class MainActivity : AppCompatActivity() {
 
                 urlConnection.disconnect()
                 vetor_.clear()
+                BMvetor_.clear()
                 for (i in 0..(returns.length()-1)){
                     //vetor_.add(returns.getJSONObject(i).getString("imdbID"))
+                    val imgurl = returns.getJSONObject(i).getString("Poster")
+                    BMvetor_.add(getBitmapFromURL(imgurl))
                     url = URL("http://www.omdbapi.com/?apikey=24f3e826&i="+returns.getJSONObject(i).getString("imdbID"))
                     var urlConnection = url.openConnection() as HttpURLConnection
                     var resp = BufferedInputStream(urlConnection.inputStream)

@@ -20,7 +20,7 @@
         android:inputType="text"
         android:imeOptions="actionSearch"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerviewid"
         android:layout_width="368dp"
         android:layout_height="441dp"
