@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets
 import org.json.JSONException
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.inputmethod.InputMethodManager
@@ -27,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var listViews: RecyclerView
     lateinit var editText: EditText
-    //lateinit var adapter : ArrayAdapter<String>
     lateinit var adapter : MyAdapter
     lateinit var spiner : ProgressBar
     var vetor_ = ArrayList<String>()
@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
 
         adapter = MyAdapter(this,vetor_,BMvetor_)
-        //adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vetor_)
         spiner = findViewById<ProgressBar>(R.id.progressBar)
         spiner.visibility= View.INVISIBLE
 
@@ -55,11 +54,18 @@ class MainActivity : AppCompatActivity() {
                     downloadContent().execute()
                     val imm = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
+
+
+                    /*val transaction = supportFragmentManager.beginTransaction()
+                    transaction.add(R.id.frameid,MainFragment())
+                    transaction.commit()*/
+
                     true
                 }
                 else -> false
             }
         }
+
     }
 
     override fun onStart() {
@@ -100,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 vetor_.clear()
                 BMvetor_.clear()
                 for (i in 0..(returns.length()-1)){
-                    //vetor_.add(returns.getJSONObject(i).getString("imdbID"))
                     val imgurl = returns.getJSONObject(i).getString("Poster")
                     BMvetor_.add(getBitmapFromURL(imgurl))
                     url = URL("http://www.omdbapi.com/?apikey=24f3e826&i="+returns.getJSONObject(i).getString("imdbID"))
@@ -118,17 +123,14 @@ class MainActivity : AppCompatActivity() {
                     }
                     urlConnection.disconnect()
                 }
-
                 for (i in vetor_.iterator()){
                     Log.i(TAG,i)
                 }
-
             }catch (e: JSONException){
                 return false
             }catch (e: IOException){
                 return false
             }
-
             return true
         }
 
