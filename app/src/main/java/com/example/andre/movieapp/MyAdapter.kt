@@ -17,18 +17,26 @@ import com.example.andre.movieapp.R.id.parent
 import kotlinx.android.synthetic.main.layout_listimtem.view.*
 import java.net.URI
 
-class MyAdapter(val mContext: Context, val mText: ArrayList<String>, val mImage: ArrayList<Bitmap>): RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val mContext: Context, val mMovie: ArrayList<Movie>): RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 
     override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
-        p0.texto_rf.text = mText[p1]
-        p0.image_rf.setImageBitmap(mImage[p1])
+        //p0.texto_rf.text = mText[p1]
+        //p0.image_rf.setImageBitmap(mImage[p1])
+        val auxstr = mMovie[p1].Name + '\n' + "R:" + mMovie[p1].Rating
+        p0.texto_rf.text = auxstr
+        p0.image_rf.setImageBitmap(mMovie[p1].Poster)
 
         p0.itemView.setOnClickListener{
             val myfrag = MainFragment()
             val mybundle = Bundle()
-            mybundle.putString("txt",mText[p1])
-            mybundle.putParcelable("img",mImage[p1])
+
+            mybundle.putString("Name",mMovie[p1].Name)
+            mybundle.putString("Age",mMovie[p1].Age)
+            mybundle.putString("plot",mMovie[p1].plot)
+            mybundle.putString("Rating",mMovie[p1].Rating)
+            mybundle.putParcelable("Poster",mMovie[p1].Poster)
+
             myfrag.arguments = mybundle
 
             val transaction = (mContext as MainActivity).supportFragmentManager.beginTransaction()
@@ -45,7 +53,7 @@ class MyAdapter(val mContext: Context, val mText: ArrayList<String>, val mImage:
         return MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_listimtem, p0, false))
     }
     override fun getItemCount(): Int {
-        return mText.size
+        return mMovie.size
     }
 
 

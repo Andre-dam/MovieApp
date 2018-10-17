@@ -39,13 +39,16 @@
         android:text="Lorem ipsum"
         android:textColor="@color/colorAccent"
         android:textSize="12sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:layout_weight="0"/>
 
     <ImageView
+        android:layout_weight="1"
         android:layout_gravity="center"
         android:id="@+id/mfImgtxt"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:background="#fff"
         android:elevation="5dp"
@@ -54,16 +57,18 @@
     <View android:layout_height="1px"
         android:layout_width="fill_parent"
         android:background="#90909090"
-        android:id="@+id/separator1" />
+        android:id="@+id/separator1"
+        android:layout_weight="0"/>
 
     <TextView
-        android:textSize="16sp"
+        android:layout_weight="0"
         android:id="@+id/mfBotTxt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="#fff"
         android:fontFamily="@font/roboto_light"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla at risus. Quisque purus magna, auctor et, sagittis ac, posuere eu, lectus. Nam mattis, felis ut adipiscing" />
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla at risus. Quisque purus magna, auctor et, sagittis ac, posuere eu, lectus. Nam mattis, felis ut adipiscing"
+        android:textSize="16sp" />
 
 </LinearLayout>

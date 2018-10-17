@@ -21,11 +21,14 @@ class MainFragment:Fragment(){
         toptxt1 = v.findViewById(R.id.mfTopTxt)
         toptxt2 = v.findViewById(R.id.mfTopTxt2)
         img = v.findViewById(R.id.mfImgtxt)
+        sinopse = v.findViewById(R.id.mfBotTxt)
 
         val bundle = this.arguments
         if(bundle != null){
-            toptxt1.text = bundle.getCharSequence("txt")
-            img.setImageBitmap(bundle.getParcelable("img"))
+            toptxt1.text = bundle.getCharSequence("Name")
+            toptxt2.text = bundle.getCharSequence("Age")
+            img.setImageBitmap(bundle.getParcelable("Poster"))
+            sinopse.text = bundle.getCharSequence("plot")
         }
         return v
 

@@ -24,14 +24,22 @@ import android.view.inputmethod.InputMethodManager
 
 private val TAG = "MyActivity"
 
+data class Movie(var imdbid: String, var Name: String){
+    var Age = ""
+    var plot = ""
+    lateinit var Poster: Bitmap
+    var Rating = ""
+}
+
 class MainActivity : AppCompatActivity() {
 
     lateinit var listViews: RecyclerView
     lateinit var editText: EditText
     lateinit var adapter : MyAdapter
     lateinit var spiner : ProgressBar
-    var vetor_ = ArrayList<String>()
-    var BMvetor_ = ArrayList<Bitmap>()
+    //var vetor_ = ArrayList<String>()
+    //var BMvetor_ = ArrayList<Bitmap>()
+    var movieQuerry = ArrayList<Movie>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         editText = findViewById<EditText>(R.id.editText)
 
 
-        adapter = MyAdapter(this,vetor_,BMvetor_)
+        adapter = MyAdapter(this,movieQuerry)
         spiner = findViewById<ProgressBar>(R.id.progressBar)
         spiner.visibility= View.INVISIBLE
 
@@ -72,9 +80,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    inner class downloadContent:AsyncTask<String,Boolean,Boolean >(){
+    inner class downloadContent():AsyncTask<String,Boolean,Boolean >(){
 
-        fun getBitmapFromURL(src: String): Bitmap {
+        private fun getBitmapFromURL(src: String): Bitmap {
             try {
                 val url = java.net.URL(src)
                 val connection = url
@@ -100,37 +108,49 @@ class MainActivity : AppCompatActivity() {
                 var resp = BufferedInputStream(urlConnection.inputStream)
                 var lines = BufferedReader(InputStreamReader(resp,StandardCharsets.UTF_8)).readText()
                 Log.i(TAG,lines)
-                var returns = JSONObject(lines).getJSONArray("Search")
+                val returns = JSONObject(lines).getJSONArray("Search")
 
                 urlConnection.disconnect()
-                vetor_.clear()
-                BMvetor_.clear()
+                movieQuerry.clear()
+                //vetor_.clear()
+                //BMvetor_.clear()
                 for (i in 0..(returns.length()-1)){
-                    val imgurl = returns.getJSONObject(i).getString("Poster")
-                    BMvetor_.add(getBitmapFromURL(imgurl))
-                    url = URL("http://www.omdbapi.com/?apikey=24f3e826&i="+returns.getJSONObject(i).getString("imdbID"))
-                    var urlConnection = url.openConnection() as HttpURLConnection
-                    var resp = BufferedInputStream(urlConnection.inputStream)
-                    var lines = BufferedReader(InputStreamReader(resp,StandardCharsets.UTF_8)).readText()
-                    var resumeJSON =JSONObject(lines)
+                    val query_temp = Movie("","")
+                    //val imgurl = returns.getJSONObject(i).getString("Poster")
+                    //BMvetor_.add(getBitmapFromURL(imgurl))
+                    query_temp.Poster = getBitmapFromURL(returns.getJSONObject(i).getString("Poster"))
+                    query_temp.imdbid = returns.getJSONObject(i).getString("imdbID")
+
+                    url = URL("http://www.omdbapi.com/?apikey=24f3e826&i="+query_temp.imdbid)
+                    urlConnection = url.openConnection() as HttpURLConnection
+                    resp = BufferedInputStream(urlConnection.inputStream)
+                    lines = BufferedReader(InputStreamReader(resp,StandardCharsets.UTF_8)).readText()
+                    Log.i(TAG,lines)
+                    val resumeJSON =JSONObject(lines)
+                    query_temp.plot = resumeJSON.getString("Plot")
+                    query_temp.Name = resumeJSON.getString("Title")
+                    query_temp.Age = resumeJSON.getString("Released")
 
                     val rating_array = resumeJSON.getJSONArray("Ratings")
                     for (j in 0..(rating_array.length()-1)){
                         val sorc = rating_array.getJSONObject(j)
                         if(sorc.getString("Source").equals("Rotten Tomatoes")){
-                            vetor_.add(resumeJSON.getString("Title")+ '\n' +"Rating:"+ sorc.getString("Value"))
+                            query_temp.Rating = sorc.getString("Value") + " from Rotten Tomatoes"
+                            //vetor_.add(resumeJSON.getString("Title")+ '\n' +"Rating:"+ sorc.getString("Value"))
                         }
                     }
+                    if(query_temp.Rating.equals("")) query_temp.Rating = resumeJSON.getString("imdbRating")+" from IMDb"
+                    movieQuerry.add(query_temp)
                     urlConnection.disconnect()
                 }
-                for (i in vetor_.iterator()){
-                    Log.i(TAG,i)
-                }
             }catch (e: JSONException){
+                Log.i(TAG,"ERRO DE JSON")
                 return false
             }catch (e: IOException){
+                Log.i(TAG,"ERRO DE IO")
                 return false
             }
+            Log.i(TAG,movieQuerry.toString())
             return true
         }
 
