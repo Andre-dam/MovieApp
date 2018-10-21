@@ -1,6 +1,7 @@
 package com.example.andre.movieapp
 
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -62,8 +63,8 @@ class MainActivity : AppCompatActivity() {
                     downloadContent().execute()
                     val imm = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
-
-
+                    //val myint = Intent(this,MyDisplay::class.java)
+                    //startActivity(myint)
                     /*val transaction = supportFragmentManager.beginTransaction()
                     transaction.add(R.id.frameid,MainFragment())
                     transaction.commit()*/
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class downloadContent():AsyncTask<String,Boolean,Boolean >(){
 
-        private fun getBitmapFromURL(src: String): Bitmap {
+        private fun getBitmapFromURL(src: String, name: String): Bitmap {
             try {
                 val url = java.net.URL(src)
                 val connection = url
@@ -90,7 +91,15 @@ class MainActivity : AppCompatActivity() {
                 connection.doInput = true
                 connection.connect()
                 val input = connection.inputStream
-                return BitmapFactory.decodeStream(input)
+                val fos = openFileOutput(name, Context.MODE_PRIVATE)
+                fos.write(input.readBytes())
+                fos.close()
+
+                val fol = openFileInput(name)
+                val bmp = BitmapFactory.decodeStream(fol)
+                fol.close()
+                //return BitmapFactory.decodeStream(input)
+                return bmp
             } catch (e: IOException) {
                 e.printStackTrace()
                 return BitmapFactory.decodeResource(resources,R.mipmap.apollo)
@@ -118,7 +127,6 @@ class MainActivity : AppCompatActivity() {
                     val query_temp = Movie("","")
                     //val imgurl = returns.getJSONObject(i).getString("Poster")
                     //BMvetor_.add(getBitmapFromURL(imgurl))
-                    query_temp.Poster = getBitmapFromURL(returns.getJSONObject(i).getString("Poster"))
                     query_temp.imdbid = returns.getJSONObject(i).getString("imdbID")
 
                     url = URL("http://www.omdbapi.com/?apikey=24f3e826&i="+query_temp.imdbid)
@@ -130,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                     query_temp.plot = resumeJSON.getString("Plot")
                     query_temp.Name = resumeJSON.getString("Title")
                     query_temp.Age = resumeJSON.getString("Released")
+                    query_temp.Poster = getBitmapFromURL(returns.getJSONObject(i).getString("Poster"), query_temp.Name)
 
                     val rating_array = resumeJSON.getJSONArray("Ratings")
                     for (j in 0..(rating_array.length()-1)){

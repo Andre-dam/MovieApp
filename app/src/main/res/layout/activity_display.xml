@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/frids"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="false"
+        android:layout_marginHorizontal="20sp"
+        android:layout_marginVertical="8sp"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:elevation="4dp">
+
+
+        <TextView
+            android:id="@+id/mfTopTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSecondary"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="10dp"
+            android:text="Lorem ipsum"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/mfTopTxt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSecondary"
+            android:fontFamily="@font/roboto_medium"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="10dp"
+            android:text="Lorem ipsum"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:layout_weight="0"/>
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/mfImgtxt"
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:background="#fff"
+            android:elevation="5dp"
+            android:src="@mipmap/apollo" />
+
+        <View android:layout_height="1px"
+            android:layout_width="fill_parent"
+            android:background="#90909090"
+            android:id="@+id/separator1"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:layout_weight="0"
+            android:id="@+id/mfBotTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#fff"
+            android:fontFamily="@font/roboto_light"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla at risus. Quisque purus magna, auctor et, sagittis ac, posuere eu, lectus. Nam mattis, felis ut adipiscing"
+            android:textSize="16sp" />
+    </android.support.v7.widget.LinearLayoutCompat>
+</LinearLayout>

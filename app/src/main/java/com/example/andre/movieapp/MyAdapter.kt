@@ -2,6 +2,7 @@ package com.example.andre.movieapp
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -13,6 +14,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import android.support.v4.app.FragmentManager
+import android.support.v4.content.ContextCompat.startActivity
 import com.example.andre.movieapp.R.id.parent
 import kotlinx.android.synthetic.main.layout_listimtem.view.*
 import java.net.URI
@@ -28,21 +30,25 @@ class MyAdapter(val mContext: Context, val mMovie: ArrayList<Movie>): RecyclerVi
         p0.image_rf.setImageBitmap(mMovie[p1].Poster)
 
         p0.itemView.setOnClickListener{
-            val myfrag = MainFragment()
+            //val myfrag = MainFragment()
             val mybundle = Bundle()
 
             mybundle.putString("Name",mMovie[p1].Name)
             mybundle.putString("Age",mMovie[p1].Age)
             mybundle.putString("plot",mMovie[p1].plot)
             mybundle.putString("Rating",mMovie[p1].Rating)
-            mybundle.putParcelable("Poster",mMovie[p1].Poster)
+            //mybundle.putParcelable("Poster",mMovie[p1].Poster)
 
-            myfrag.arguments = mybundle
+            //myfrag.arguments = mybundle
 
-            val transaction = (mContext as MainActivity).supportFragmentManager.beginTransaction()
+            val myint = Intent(mContext,MyDisplay::class.java)
+            myint.putExtra("bund",mybundle)
+            mContext.startActivity(myint)
+
+            /*val transaction = (mContext as MainActivity).supportFragmentManager.beginTransaction()
             transaction.add(R.id.frameid,myfrag)
             transaction.addToBackStack(null)
-            transaction.commit()
+            transaction.commit()*/
         }
     }
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
