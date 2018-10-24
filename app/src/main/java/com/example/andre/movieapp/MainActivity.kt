@@ -20,6 +20,8 @@ import android.graphics.BitmapFactory
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 
 
@@ -35,18 +37,20 @@ data class Movie(var imdbid: String, var Name: String){
 class MainActivity : AppCompatActivity() {
 
     lateinit var listViews: RecyclerView
-    lateinit var editText: EditText
+    //lateinit var editText: EditText
     lateinit var adapter : MyAdapter
     lateinit var spiner : ProgressBar
     //var vetor_ = ArrayList<String>()
     //var BMvetor_ = ArrayList<Bitmap>()
     var movieQuerry = ArrayList<Movie>()
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         listViews = findViewById<RecyclerView>(R.id.recyclerviewid)
-        editText = findViewById<EditText>(R.id.editText)
+        //editText = findViewById<EditText>(R.id.editText)
 
 
         adapter = MyAdapter(this,movieQuerry)
@@ -57,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         listViews.adapter = adapter
         listViews.layoutManager = LinearLayoutManager(this)
 
-        editText.setOnEditorActionListener { v, actionId, event ->
+        /*editText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     downloadContent().execute()
@@ -73,13 +77,32 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }
+        }*/
+
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.searchmenu,menu)
+        val item = menu?.findItem(R.id.app_bar_search) as MenuItem
+
+        val sv = (item.actionView as SearchView)
+
+        sv.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //editText.setText(query)
+                downloadContent().execute(query)
+                return false
+            }
+        })
+
+        return super.onCreateOptionsMenu(menu)
 
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     inner class downloadContent():AsyncTask<String,Boolean,Boolean >(){
 
@@ -111,7 +134,8 @@ class MainActivity : AppCompatActivity() {
 
             Log.i(TAG,"Entrou em doInback")
             publishProgress(true)
-            var url = URL("http://www.omdbapi.com/?apikey=24f3e826&s="+editText.text.toString()+"&type=movie")
+            //var url = URL("http://www.omdbapi.com/?apikey=24f3e826&s="+editText.text.toString()+"&type=movie")
+            var url = URL("http://www.omdbapi.com/?apikey=24f3e826&s="+params[0]+"&type=movie")
             var urlConnection = url.openConnection() as HttpURLConnection
             try {
                 var resp = BufferedInputStream(urlConnection.inputStream)
