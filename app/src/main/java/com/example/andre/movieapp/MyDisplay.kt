@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import java.io.FileNotFoundException
 
 class MyDisplay: Activity(){
     lateinit var toptxt1: TextView
@@ -27,11 +29,18 @@ class MyDisplay: Activity(){
             toptxt1.text = bundle.getCharSequence("Name")
             toptxt2.text = bundle.getCharSequence("Age")
             //img.setImageBitmap(bundle.getParcelable("Poster"))
-            val fol = openFileInput(bundle.getCharSequence("Name").toString())
+            try {
+                val fol = openFileInput(bundle.getCharSequence("Name").toString())
+                val bm = BitmapFactory.decodeStream(fol)
+                img.setImageBitmap(bm)
+                fol.close()
+            }catch(e: FileNotFoundException){
+                Log.d("TAG", "FileNotFoundException")
+                img.setImageBitmap(BitmapFactory.decodeResource(resources,R.mipmap.image_not_found))
+
+            }
             //val mybmb = fol.read()
-            val bm = BitmapFactory.decodeStream(fol)
-            img.setImageBitmap(bm)
-            fol.close()
+
             sinopse.text = bundle.getCharSequence("plot")
         }
     }

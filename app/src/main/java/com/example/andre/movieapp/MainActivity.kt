@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 return bmp
             } catch (e: IOException) {
                 e.printStackTrace()
-                return BitmapFactory.decodeResource(resources,R.mipmap.apollo)
+                return BitmapFactory.decodeResource(resources,R.mipmap.image_not_found)
             }
 
         }
